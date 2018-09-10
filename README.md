@@ -1,6 +1,6 @@
 # Introduction
 
-[![Travis](https://img.shields.io/travis/i18next/i18next-fluent/master.svg?style=flat-square)](https://travis-ci.org/i18next/i18next-fluent)
+[![Travis](https://img.shields.io/travis/i18next/i18next-fluent/master.svg?style=flat-square)](https://travis-ci.com/i18next/i18next-fluent)
 [![Coveralls](https://img.shields.io/coveralls/i18next/i18next-fluent/master.svg?style=flat-square)](https://coveralls.io/github/i18next/i18next-fluent)
 [![npm version](https://img.shields.io/npm/v/i18next-fluent.svg?style=flat-square)](https://www.npmjs.com/package/i18next-fluent)
 [![David](https://img.shields.io/david/i18next/i18next-fluent.svg?style=flat-square)](https://david-dm.org/i18next/i18next-fluent)
