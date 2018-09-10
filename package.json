@@ -1,0 +1,69 @@
+{
+  "name": "i18next-fluent",
+  "version": "0.0.1",
+  "description": "i18nFormat plugin to use fluent format with i18next",
+  "main": "./index.js",
+  "jsnext:main": "dist/es/index.js",
+  "keywords": [
+    "i18next",
+    "i18next-format",
+    "fluent"
+  ],
+  "homepage": "https://github.com/i18next/i18next-fluent",
+  "bugs": "https://github.com/i18next/i18next-fluent/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/i18next/i18next-fluent"
+  },
+  "dependencies": {
+    "fluent": "^0.8.0",
+    "fluent_conv": "^1.0.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.0.0-beta.47",
+    "@babel/plugin-proposal-async-generator-functions": "^7.0.0-beta.47",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0-beta.47",
+    "@babel/plugin-transform-modules-commonjs": "^7.0.0-beta.47",
+    "@babel/polyfill": "^7.0.0-beta.47",
+    "@babel/preset-env": "^7.0.0-beta.47",
+    "@babel/register": "^7.0.0-beta.47",
+    "babel-cli": "6.18.0",
+    "babel-eslint": "^8.2.3",
+    "babel-preset-es2015": "6.18.0",
+    "babel-preset-stage-0": "6.16.0",
+    "chai": "^4.1.2",
+    "eslint": "^4.18.1",
+    "eslint-plugin-mocha": "^4.11.0",
+    "i18next": "^11.8.0",
+    "mocha": "^4.1.0",
+    "rimraf": "2.5.4",
+    "rollup": "0.41.1",
+    "rollup-plugin-babel": "2.7.1",
+    "rollup-plugin-commonjs": "^9.1.6",
+    "rollup-plugin-node-resolve": "2.0.0",
+    "rollup-plugin-uglify": "1.0.1",
+    "sinon": "1.17.7",
+    "yargs": "6.6.0"
+  },
+  "scripts": {
+    "test": "mocha -r ./mocha_setup.js",
+    "tdd": "karma start karma.conf.js",
+    "clean": "rimraf dist && mkdirp dist",
+    "copy": "cp ./dist/umd/i18nextFluent.min.js ./i18nextFluent.min.js && cp ./dist/umd/i18nextFluent.js ./i18nextFluent.js",
+    "copy-win": "xcopy .\\dist\\umd\\i18nextFluent.min.js .\\i18nextFluent.min.js /y && xcopy .\\dist\\umd\\i18nextFluent.js .\\i18nextFluent.js /y",
+    "build:es": "BABEL_ENV=jsnext babel src --out-dir dist/es",
+    "build:es-win": "SET BABEL_ENV=jsnext babel src --out-dir dist/es",
+    "build:cjs": "babel src --out-dir dist/commonjs",
+    "build:umd": "rollup -c rollup.config.js --format umd && rollup -c rollup.config.js --format umd --uglify",
+    "build:amd": "rollup -c rollup.config.js --format amd && rollup -c rollup.config.js --format umd --uglify",
+    "build:iife": "rollup -c rollup.config.js --format iife && rollup -c rollup.config.js --format iife --uglify",
+    "build": "npm run clean && npm run build:cjs && npm run build:es",
+    "build:all": "npm run clean && npm run build:cjs && npm run build:es && npm run build:umd && npm run copy && npm run copyLocale",
+    "build-win": "npm run clean && npm run build:cjs && npm run build:es-win && npm run build:umd && npm run copy-win",
+    "preversion": "npm run test && npm run build && git push",
+    "postversion": "git push && git push --tags"
+  },
+  "author": "Jan Mühlemann <jan.muehlemann@gmail.com> (https://github.com/jamuhl)",
+  "license": "MIT",
+  "lock": false
+}
