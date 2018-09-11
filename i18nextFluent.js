@@ -2176,12 +2176,16 @@
 
     parse(res, options, lng, ns, key, info) {
       const bundle = this.store.getBundle(lng, ns);
-      return bundle.format(res, options);
+      const isAttr = key.indexOf('.') > -1;
+      if (!res) return key;
+      const useRes = isAttr ? res.attrs[key.split('.')[1]] : res;
+      return bundle.format(useRes, options);
     }
 
     getResource(lng, ns, key, options) {
       const bundle = this.store.getBundle(lng, ns);
-      return bundle.getMessage(key);
+      const useKey = key.indexOf('.') > -1 ? key.split('.')[0] : key;
+      return bundle.getMessage(useKey);
     }
 
     addLookupKeys(finalKeys, key, code, ns, options) {

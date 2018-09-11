@@ -96,14 +96,19 @@ class Fluent {
 
   parse(res, options, lng, ns, key, info) {
     const bundle = this.store.getBundle(lng, ns);
+    const isAttr = key.indexOf('.') > -1;
 
-    return bundle.format(res, options);
+    if (!res) return key;
+
+    const useRes = isAttr ? res.attrs[key.split('.')[1]] : res;
+    return bundle.format(useRes, options);
   }
 
   getResource(lng, ns, key, options) {
     const bundle = this.store.getBundle(lng, ns);
+    const useKey = key.indexOf('.') > -1 ? key.split('.')[0] : key;
 
-    return bundle.getMessage(key);
+    return bundle.getMessage(useKey);
   }
 
   addLookupKeys(finalKeys, key, code, ns, options) {
