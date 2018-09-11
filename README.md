@@ -47,6 +47,10 @@ i18next.use(Fluent).init({
 });
 ```
 
+### loading .ftl fluent flavored textfiles
+
+You can use the [i18next-fluent-backend](https://github.com/i18next/i18next-fluent-backend) to directly load fluent files in fluent syntax from the server.
+
 ### more complete sample
 
 ```js
