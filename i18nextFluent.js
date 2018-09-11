@@ -2139,7 +2139,7 @@
     }
 
     bind() {
-      this.i18next.on('added', (lng, ns) => {
+      this.i18next.store.on('added', (lng, ns) => {
         if (!this.i18next.isInitialized) return;
         this.createBundleFromI18next(lng, ns);
       });
@@ -2179,12 +2179,14 @@
       const isAttr = key.indexOf('.') > -1;
       if (!res) return key;
       const useRes = isAttr ? res.attrs[key.split('.')[1]] : res;
+      if (!bundle) return key;
       return bundle.format(useRes, options);
     }
 
     getResource(lng, ns, key, options) {
-      const bundle = this.store.getBundle(lng, ns);
+      let bundle = this.store.getBundle(lng, ns);
       const useKey = key.indexOf('.') > -1 ? key.split('.')[0] : key;
+      if (!bundle) return key;
       return bundle.getMessage(useKey);
     }
 
