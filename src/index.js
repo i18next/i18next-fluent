@@ -41,7 +41,7 @@ class BundleStore {
   }
 
   createBundle(lng, ns, json) {
-    const ftlStr = js2ftl(json);
+    const ftlStr = json ? js2ftl(json) : "";
     const bundle = new FluentBundle(lng, this.options.fluentBundleOptions);
     const errors = bundle.addMessages(ftl(ftlStr));
 
