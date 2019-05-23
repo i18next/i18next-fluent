@@ -1,3 +1,7 @@
+### 0.0.4
+
+- Fix using i18next's fallback language support [3](https://github.com/i18next/i18next-fluent/pull/3)
+
 ### 0.0.3
 
 - check if bundle exists before getMessage call

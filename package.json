@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "fluent": "^0.8.0",
-    "fluent_conv": "^1.0.2"
+    "fluent_conv": "^1.1.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0",

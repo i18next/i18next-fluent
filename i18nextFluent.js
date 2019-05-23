@@ -2124,7 +2124,7 @@
     }
 
     createBundle(lng, ns, json) {
-      const ftlStr = js2ftl_1(json);
+      const ftlStr = json ? js2ftl_1(json) : "";
       const bundle = new FluentBundle(lng, this.options.fluentBundleOptions);
       const errors = bundle.addMessages(ftl$1(ftlStr));
       setPath(this.bundles, [lng, ns], bundle);
