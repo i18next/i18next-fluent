@@ -29,7 +29,7 @@ i18next.use(Fluent).init(i18nextOptions);
 
 ## Samples
 
-- [with react and react-i18next](https://github.com/i18next/react-i18next/tree/master/example/react_fluent_withHOC)
+- [with react and react-i18next](https://github.com/i18next/react-i18next/tree/master/example/v9.x.x/react-fluent)
 
 ## Options
 
