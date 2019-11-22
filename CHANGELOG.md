@@ -1,3 +1,7 @@
+### 1.0.0
+
+- Return undefined when unable to get bundle in getResource [5](https://github.com/i18next/i18next-fluent/pull/5)
+
 ### 0.0.4
 
 - Fix using i18next's fallback language support [3](https://github.com/i18next/i18next-fluent/pull/3)

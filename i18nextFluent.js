@@ -2186,7 +2186,7 @@
     getResource(lng, ns, key, options) {
       let bundle = this.store.getBundle(lng, ns);
       const useKey = key.indexOf('.') > -1 ? key.split('.')[0] : key;
-      if (!bundle) return key;
+      if (!bundle) return undefined;
       return bundle.getMessage(useKey);
     }
 

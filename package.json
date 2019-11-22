@@ -1,6 +1,6 @@
 {
   "name": "i18next-fluent",
-  "version": "0.0.4",
+  "version": "1.0.0",
   "description": "i18nFormat plugin to use fluent format with i18next",
   "main": "./index.js",
   "jsnext:main": "dist/es/index.js",
