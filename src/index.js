@@ -63,7 +63,13 @@ class BundleStore {
     });
 
     this.i18next.on('initialized', () => {
-      this.i18next.languages.forEach(lng => {
+      var lngs = _this.i18next.languages || [];
+      var preload = _this.i18next.options.preload || [];
+      
+      lngs
+        .filter(l => !preload.includes(l))
+        .concat(preload)
+        .forEach(lng => {
         this.i18next.options.ns.forEach(ns => {
           this.createBundleFromI18next(lng, ns);
         });
