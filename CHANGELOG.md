@@ -1,3 +1,7 @@
+### 1.0.1
+
+- fix serverside usage by loading to fluent by preloaded languages - not current [6](https://github.com/i18next/i18next-fluent/pull/6)
+
 ### 1.0.0
 
 - Return undefined when unable to get bundle in getResource [5](https://github.com/i18next/i18next-fluent/pull/5)

@@ -63,9 +63,9 @@ class BundleStore {
     });
 
     this.i18next.on('initialized', () => {
-      var lngs = _this.i18next.languages || [];
-      var preload = _this.i18next.options.preload || [];
-      
+      var lngs = this.i18next.languages || [];
+      var preload = this.i18next.options.preload || [];
+
       lngs
         .filter(l => !preload.includes(l))
         .concat(preload)

@@ -2144,7 +2144,9 @@
         this.createBundleFromI18next(lng, ns);
       });
       this.i18next.on('initialized', () => {
-        this.i18next.languages.forEach(lng => {
+        var lngs = this.i18next.languages || [];
+        var preload = this.i18next.options.preload || [];
+        lngs.filter(l => !preload.includes(l)).concat(preload).forEach(lng => {
           this.i18next.options.ns.forEach(ns => {
             this.createBundleFromI18next(lng, ns);
           });
