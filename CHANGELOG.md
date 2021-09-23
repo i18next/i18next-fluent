@@ -1,3 +1,8 @@
+### 2.0.0
+
+- update fluent to spec 1.0 [7](https://github.com/i18next/i18next-fluent/pull/7)
+- bindI18nextStore was renamed to bindI18nStore
+
 ### 1.0.1
 
 - fix serverside usage by loading to fluent by preloaded languages - not current [6](https://github.com/i18next/i18next-fluent/pull/6)
