@@ -1,11 +1,11 @@
 import * as utils from './utils.js';
-import { FluentBundle } from 'fluent';
-import js2ftl from 'fluent_conv/js2ftl';
+import { FluentBundle } from '@fluent/bundle';
+import { js2ftl } from 'fluent_conv';
 
 function getDefaults() {
   return {
-    bindI18nextStore: true,
-    fluentBundleOptions: { useIsolating: false }
+    bindI18nStore: true,
+    fluentBundleOptions: { useIsolating: false },
   };
 }
 
@@ -53,7 +53,7 @@ class BundleStore {
   }
 
   getBundle(lng, ns) {
-    return utils.getPath(this.bundles, [lng, ns])
+    return utils.getPath(this.bundles, [lng, ns]);
   }
 
   bind() {
@@ -67,13 +67,13 @@ class BundleStore {
       var preload = this.i18next.options.preload || [];
 
       lngs
-        .filter(l => !preload.includes(l))
+        .filter((l) => !preload.includes(l))
         .concat(preload)
-        .forEach(lng => {
-        this.i18next.options.ns.forEach(ns => {
-          this.createBundleFromI18next(lng, ns);
+        .forEach((lng) => {
+          this.i18next.options.ns.forEach((ns) => {
+            this.createBundleFromI18next(lng, ns);
+          });
         });
-      })
     });
   }
 }
@@ -87,12 +87,13 @@ class Fluent {
   }
 
   init(i18next, options) {
-    const i18nextOptions = (i18next && i18next.options && i18next.options.i18nFormat) || {};
+    const i18nextOptions =
+      (i18next && i18next.options && i18next.options.i18nFormat) || {};
     this.options = utils.defaults(i18nextOptions, options, this.options || {}, getDefaults());
 
     if (i18next) {
       this.store = new BundleStore(i18next, this.options);
-      if (this.options.bindI18nextStore) this.store.bind();
+      if (this.options.bindI18nStore) this.store.bind();
 
       i18next.fluent = this;
     } else {
@@ -127,6 +128,5 @@ class Fluent {
 }
 
 Fluent.type = 'i18nFormat';
-
 
 export default Fluent;
