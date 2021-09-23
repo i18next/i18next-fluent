@@ -4,7 +4,7 @@
 [![npm version](https://img.shields.io/npm/v/i18next-fluent.svg?style=flat-square)](https://www.npmjs.com/package/i18next-fluent)
 [![David](https://img.shields.io/david/i18next/i18next-fluent.svg?style=flat-square)](https://david-dm.org/i18next/i18next-fluent)
 
-This changes i18n format from i18next json to [fluent](https://projectfluent.org)
+This changes i18n format from i18next json to [fluent](https://projectfluent.org) Spec version 1.0.0
 
 # Getting started
 

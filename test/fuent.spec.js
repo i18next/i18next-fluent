@@ -1,15 +1,15 @@
 import Fluent from "../src/";
 import i18next from "i18next";
 
-import { FluentBundle, ftl } from "fluent";
+import { FluentBundle, ftl } from "@fluent/bundle";
 
 const testJSON = {
   emails:
     "{ $unreadEmails ->\n [0] You have no unread emails.\n [one] You have one unread email.\n *[other] You have { $unreadEmails } unread emails.\n}",
-  "-brand-name": "{\n *[nominative] Firefox\n  [accusative] Firefoxa\n}",
+  "-brand-name": "{\n $case -> *[nominative] Firefox\n  [accusative] Firefoxa\n}",
   "-another-term": "another term",
   "app-title": "{ -brand-name }",
-  "restart-app": "Zrestartuj { -brand-name[accusative] }.",
+  "restart-app": 'Zrestartuj { -brand-name(case: "accusative") }.',
   login: {
     comment:
       "Note: { $title } is a placeholder for the title of the web page\ncaptured in the screenshot. The default, for pages without titles, is\ncreating-page-title-default.",
@@ -28,7 +28,7 @@ describe("fluent format", () => {
 
     before(() => {
       fluent = new Fluent({
-        bindI18nextStore: false
+        bindI18nStore: false
       });
 
       fluent.store.createBundle("en", "translations", testJSON);
