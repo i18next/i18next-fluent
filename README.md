@@ -27,6 +27,11 @@ i18next.use(Fluent).init(i18nextOptions);
 - As with all modules you can either pass the constructor function (class) to the i18next.use or a concrete instance.
 - If you don't use a module loader it will be added to `window.i18nextFluent`
 
+## Advice
+
+When using this module, only the fluent format is respected, this means the i18next format interpolation etc. will not work.
+So for example instead of `Hy {{name}}!` it is `Hi {$name}!`
+
 ## Samples
 
 - [with react and react-i18next](https://github.com/i18next/react-i18next/tree/master/example/v9.x.x/react-fluent)
