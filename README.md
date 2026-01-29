@@ -34,7 +34,7 @@ So for example instead of `Hy {{name}}!` it is `Hi {$name}!`
 
 ## Samples
 
-- [with react and react-i18next](https://github.com/i18next/react-i18next/tree/master/example/v9.x.x/react-fluent)
+- [with react and react-i18next](https://github.com/i18next/react-i18next/tree/master/example/react-fluent)
 
 ## Options
 
