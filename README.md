@@ -1,10 +1,10 @@
 # Introduction
 
-[![Travis](https://img.shields.io/travis/com/i18next/i18next-fluent/master.svg?style=flat-square)](https://travis-ci.com/i18next/i18next-fluent)
 [![npm version](https://img.shields.io/npm/v/i18next-fluent.svg?style=flat-square)](https://www.npmjs.com/package/i18next-fluent)
-[![David](https://img.shields.io/david/i18next/i18next-fluent.svg?style=flat-square)](https://david-dm.org/i18next/i18next-fluent)
 
 This changes i18n format from i18next json to [fluent](https://projectfluent.org) Spec version 1.0.0
+
+It formats with [@fluent/bundle](https://github.com/projectfluent/fluent.js/tree/main/fluent-bundle) 0.19, which needs Node.js 18 or newer. It is tested with i18next 26.
 
 # Getting started
 
@@ -32,6 +32,17 @@ i18next.use(Fluent).init(i18nextOptions);
 When using this module, only the fluent format is respected, this means the i18next format interpolation etc. will not work.
 So for example instead of `Hy {{name}}!` it is `Hi {$name}!`
 
+Plurals and selects are written in the message, so i18next's plural and context keys (`key_one`, `key_male`) are not used:
+
+```
+emails = { $unreadEmails ->
+    [one] You have one unread email.
+   *[other] You have { $unreadEmails } unread emails.
+}
+```
+
+Attributes are read with a dot: `i18next.t("login.placeholder")` returns the `.placeholder` attribute of the `login` message.
+
 ## Samples
 
 - [with react and react-i18next](https://github.com/i18next/react-i18next/tree/master/example/react-fluent)
@@ -40,7 +51,9 @@ So for example instead of `Hy {{name}}!` it is `Hi {$name}!`
 
 ```js
 {
-  bindI18nextStore: true,
+  // rebuild a language's fluent bundle when resources are added or removed in i18next
+  bindI18nStore: true,
+  // passed to new FluentBundle(lng, fluentBundleOptions): useIsolating, functions, transform
   fluentBundleOptions: { useIsolating: false }
 }
 ```
@@ -80,12 +93,39 @@ i18next.use(Fluent).init({
 i18next.t("hello", { name: "fluent" }); // -> Hello fluent.
 ```
 
+## Upgrading from 2.x
+
+Version 3 moves from @fluent/bundle 0.13 to 0.19. Since @fluent/bundle 0.15.1, `NUMBER()` and `DATETIME()` in a message accept only display options, so the translation can not change what a value means:
+
+- `NUMBER()` takes `unitDisplay`, `currencyDisplay`, `useGrouping`, `minimumIntegerDigits`, `minimumFractionDigits`, `maximumFractionDigits`, `minimumSignificantDigits` and `maximumSignificantDigits`. Others, such as `style: "currency"`, `currency` or `type: "ordinal"`, are ignored: `{ NUMBER($n, type: "ordinal") -> ... }` now selects the cardinal plural forms.
+- `DATETIME()` takes `dateStyle`, `timeStyle`, `fractionalSecondDigits`, `dayPeriod`, `hour12`, `weekday`, `era`, `year`, `month`, `day`, `hour`, `minute`, `second` and `timeZoneName`.
+
+If you need the other options in a message, format the value before passing it to `t`, or pass your own function in `fluentBundleOptions.functions`, for example for ordinals:
+
+```js
+i18next.use(Fluent).init({
+  i18nFormat: {
+    fluentBundleOptions: {
+      useIsolating: false,
+      functions: {
+        // place = { ORDINAL($n) -> [one] {$n}st [two] {$n}nd [few] {$n}rd *[other] {$n}th }
+        ORDINAL: ([n]) => new n.constructor(n.valueOf(), { ...n.opts, type: "ordinal" })
+      }
+    }
+  }
+});
+```
+
+## Managing the translations
+
+[Locize](https://www.locize.com/docs/integration/i18n-formats?utm_source=i18next_fluent_readme&utm_medium=github&utm_campaign=readme) supports Fluent as a project format: the editor highlights the syntax, the AI prompts carry the Fluent rules (keep the default marker `*`, term references like `-brand` and attributes) and the plural forms of the target language, every AI and machine translation is checked against its source before it is stored, and every plural is checked against the plural forms of its language. The details are in the post [AI translations that respect your i18n format](https://www.locize.com/blog/ai-translations-i18n-format?utm_source=i18next_fluent_readme&utm_medium=github&utm_campaign=readme).
+
 ---
 
 <h3 align="center">Gold Sponsors</h3>
 
 <p align="center">
-  <a href="https://locize.com/" target="_blank">
+  <a href="https://www.locize.com/?utm_source=i18next_fluent_readme&utm_medium=github&utm_campaign=readme" target="_blank">
     <img src="https://raw.githubusercontent.com/i18next/i18next/master/assets/locize_sponsor_240.gif" width="240px">
   </a>
 </p>

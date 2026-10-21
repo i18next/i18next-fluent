@@ -1,0 +1,28 @@
+name: node
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Test on node ${{ matrix.node }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: ['24.x', '22.x', '20.x']
+    steps:
+      - uses: actions/checkout@v6
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ matrix.node }}
+      - run: npm install
+      - run: npm run lint
+      # CI is set by GitHub Actions, so the tests also run against the committed i18nextFluent.js and i18nextFluent.min.js
+      - run: npm test

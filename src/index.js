@@ -1,80 +1,51 @@
-import * as utils from './utils.js';
-import { FluentBundle } from '@fluent/bundle';
-import { js2ftl } from 'fluent_conv';
+import { FluentBundle, FluentResource } from '@fluent/bundle';
+import js2ftl from 'fluent_conv/js2ftl';
 
 function getDefaults() {
   return {
     bindI18nStore: true,
-    fluentBundleOptions: { useIsolating: false },
+    fluentBundleOptions: { useIsolating: false }
   };
 }
 
-function nonBlank(line) {
-  return !/^\s*$/.test(line);
+// fluent ids and attribute names can not contain a dot, so `login.placeholder` is attribute `placeholder` of `login`
+function splitKey(key) {
+  const [id, attr] = key.split('.');
+  return { id, attr };
 }
 
-function countIndent(line) {
-  const [indent] = line.match(/^\s*/);
-  return indent.length;
-}
-
-function ftl(code) {
-  const lines = code.split("\n").filter(nonBlank);
-  const indents = lines.map(countIndent);
-  const common = Math.min(...indents);
-  const indent = new RegExp(`^\\s{${common}}`);
-
-  return lines.map(
-    line => line.replace(indent, "")
-  ).join("\n");
-}
+// a Map, so a language or namespace named __proto__ can not reach Object.prototype
+const bundleKey = (lng, ns) => JSON.stringify([lng, ns]);
 
 class BundleStore {
   constructor(i18next, options) {
     this.i18next = i18next;
     this.options = options;
-    this.bundles = {};
-
-    // this.createBundleFromI18next = this.createBundleFromI18next.bind(this);
-    // this.createBundle = this.createBundle.bind(this);
-    // this.bind = this.bind.bind(this);
+    this.bundles = new Map();
   }
 
   createBundle(lng, ns, json) {
-    const ftlStr = json ? js2ftl(json) : "";
     const bundle = new FluentBundle(lng, this.options.fluentBundleOptions);
-    const errors = bundle.addMessages(ftl(ftlStr));
+    if (json) bundle.addResource(new FluentResource(js2ftl(json)));
 
-    utils.setPath(this.bundles, [lng, ns], bundle);
-  }
-
-  createBundleFromI18next(lng, ns) {
-    this.createBundle(lng, ns, utils.getPath(this.i18next.store.data, [lng, ns]));
+    this.bundles.set(bundleKey(lng, ns), bundle);
+    return bundle;
   }
 
   getBundle(lng, ns) {
-    return utils.getPath(this.bundles, [lng, ns]);
+    const bundle = this.bundles.get(bundleKey(lng, ns));
+    if (bundle || !this.i18next) return bundle;
+
+    // created on first use, so languages that were not loaded at init (changeLanguage, inline resources) work too
+    const json = this.i18next.store.getResourceBundle(lng, ns);
+    if (!json) return undefined;
+    return this.createBundle(lng, ns, json);
   }
 
   bind() {
-    this.i18next.store.on('added', (lng, ns) => {
-      if (!this.i18next.isInitialized) return;
-      this.createBundleFromI18next(lng, ns);
-    });
-
-    this.i18next.on('initialized', () => {
-      var lngs = this.i18next.languages || [];
-      var preload = this.i18next.options.preload || [];
-
-      lngs
-        .filter((l) => !preload.includes(l))
-        .concat(preload)
-        .forEach((lng) => {
-          this.i18next.options.ns.forEach((ns) => {
-            this.createBundleFromI18next(lng, ns);
-          });
-        });
-    });
+    const drop = (lng, ns) => this.bundles.delete(bundleKey(lng, ns));
+    this.i18next.store.on('added', drop);
+    this.i18next.store.on('removed', drop);
   }
 }
 
@@ -87,9 +58,12 @@ class Fluent {
   }
 
   init(i18next, options) {
-    const i18nextOptions =
-      (i18next && i18next.options && i18next.options.i18nFormat) || {};
-    this.options = utils.defaults(i18nextOptions, options, this.options || {}, getDefaults());
+    this.options = Object.assign(
+      getDefaults(),
+      this.options,
+      options,
+      i18next && i18next.options && i18next.options.i18nFormat
+    );
 
     if (i18next) {
       this.store = new BundleStore(i18next, this.options);
@@ -102,22 +76,33 @@ class Fluent {
   }
 
   parse(res, options, lng, ns, key, info) {
-    const bundle = this.store.getBundle(lng, ns);
-    const isAttr = key.indexOf('.') > -1;
-
     if (!res) return key;
+    // a missing key or a defaultValue arrives as a plain string
+    if (typeof res === 'string') return res;
 
-    const useRes = isAttr ? res.attrs[key.split('.')[1]] : res;
+    // format with the bundle the message came from, which is the fallback language if the key was not found in lng
+    const resolved = (info && info.resolved) || {};
+    const bundle = this.store.getBundle(resolved.usedLng || lng, resolved.usedNS || ns);
     if (!bundle) return key;
-    return bundle.format(useRes, options);
+
+    const { attr } = splitKey(key);
+    const pattern = attr ? res.attributes[attr] : res.value;
+    // with an errors array formatPattern does not throw, it renders what it can, e.g. `{$name}` for a missing variable
+    return bundle.formatPattern(pattern, options, []);
   }
 
   getResource(lng, ns, key, options) {
-    let bundle = this.store.getBundle(lng, ns);
-    const useKey = key.indexOf('.') > -1 ? key.split('.')[0] : key;
-
+    const bundle = this.store.getBundle(lng, ns);
     if (!bundle) return undefined;
-    return bundle.getMessage(useKey);
+
+    const { id, attr } = splitKey(key);
+    const message = bundle.getMessage(id);
+    if (!message) return undefined;
+
+    // undefined if the message has no such value or attribute, so i18next falls back to the next language
+    const pattern = attr ? message.attributes[attr] : message.value;
+    if (pattern === undefined || pattern === null) return undefined;
+    return message;
   }
 
   addLookupKeys(finalKeys, key, code, ns, options) {
