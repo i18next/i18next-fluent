@@ -24,7 +24,10 @@ const en = {
   shared: '{ $gender ->\n [female] { $user } shared her photo.\n [male] { $user } shared his photo.\n *[other] { $user } shared their photo.\n}',
   price: 'Price: { NUMBER($amount, minimumFractionDigits: 2) }',
   greeting: '{ hello } { logout }',
-  multiline: 'Line one\n\nLine three'
+  multiline: 'Line one\n\nLine three',
+  // a message with attributes only, as fluent_conv >= 3.3.1 reads `login-input =` followed by `.placeholder = ...`
+  'login-input': { placeholder: 'email@example.com' },
+  'login-hint': 'Enter { login.placeholder }'
 };
 
 const pl = {
@@ -76,6 +79,12 @@ for (const [name, Fluent] of Object.entries(
         expect(t('login', {})).toBe('Predefined value');
         expect(t('login.placeholder', {})).toBe('example@email.com');
         expect(t('login.aria-label', {})).toBe('Login input value');
+        expect(t('login-hint', {})).toBe('Enter example@email.com');
+      });
+
+      it('reads a message that has attributes but no value', () => {
+        expect(t('login-input.placeholder', {})).toBe('email@example.com');
+        expect(fluent.getResource('en', 'translation', 'login-input')).toBeUndefined();
       });
 
       it('keeps blank lines inside a multiline value', () => {
@@ -115,6 +124,8 @@ for (const [name, Fluent] of Object.entries(
         expect(i18n.t('shared', { user: 'Anna', gender: 'female' })).toBe('Anna shared her photo.');
         expect(i18n.t('login.placeholder')).toBe('example@email.com');
         expect(i18n.t('login.title')).toBe('Type your login email');
+        expect(i18n.t('login-input.placeholder')).toBe('email@example.com');
+        expect(i18n.t('login-input')).toBe('login-input');
       });
 
       it('returns the key for a missing message or attribute, or the defaultValue', () => {

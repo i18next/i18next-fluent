@@ -1327,7 +1327,7 @@
         ftl = ftl + '\n\n';
       } else {
         if (value.comment) ftl = ftl + addComment(value.comment);
-        ftl = ftl + addValue(k, value.val);
+        ftl = ftl + (value.val == null ? k + ' =' : addValue(k, value.val));
         Object.keys(value).forEach(function (innerK) {
           if (innerK === 'comment' || innerK === 'val') return;
           var innerValue = value[innerK];

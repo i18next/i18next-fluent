@@ -14,7 +14,7 @@
 - tests run against i18next 26 (vitest), with more tests for plurals, selectors, terms, attributes and variables; CI on Node.js 20, 22 and 24 replaces Travis
 - README: options (`bindI18nStore`, `fluentBundleOptions`), attributes, upgrading from 2.x
 - index.d.ts: `fluentBundleOptions` is typed from @fluent/bundle; package.json: add `module` and `types`
-- fluent_conv `^3.3.0`
+- fluent_conv `^3.3.1`: a message with attributes and no value (`login-input =` followed by `.placeholder = ...`) is written as such, before its value was the text `undefined`
 
 ### 2.0.0
 
